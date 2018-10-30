@@ -8,6 +8,7 @@ import utils.Config;
 //TODO: Build this cache and use it. skal der være mere/mindre?
 public class OrderCache {
 
+    // hfhfh
     // List of products
     private ArrayList<Order> orders;
 
