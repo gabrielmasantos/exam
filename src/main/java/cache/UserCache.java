@@ -8,7 +8,7 @@ import utils.Config;
 //TODO: Build this cache and use it.
 public class UserCache {
 
-    /*
+
     // List of products
     private ArrayList<User> users;
 
@@ -43,6 +43,6 @@ public class UserCache {
         return this.users;
     }
 
-    */
+
 
 }
