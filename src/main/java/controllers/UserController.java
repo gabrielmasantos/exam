@@ -124,7 +124,7 @@ public class UserController {
                     + "', '"
                     + user.getLastname()
                     + "', '"
-                    + hashing.hashWithSalt(user.getPassword())
+                    + user.getPassword()
                     + "', '"
                     + user.getEmail()
                     + "', "
@@ -146,7 +146,7 @@ public class UserController {
   public String login(User user) {
 
     // Build the query for DB
-    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password=" + Hashing.md5(user.getPassword());
+    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password=" + Hashing.sha(user.getPassword());
 
     // Actually do the query
     ResultSet rs = dbCon.query(sql);
@@ -163,8 +163,8 @@ public class UserController {
                 rs.getString("email"),
                 rs.getLong("created_at"));
 
-        Hashing.md5(String.valueOf(user.getCreatedTime()));
-        if (user.getPassword().equals(Hashing.md5(user.getPassword()))) {
+        Hashing.sha(String.valueOf(user.getCreatedTime()));
+        if (user.getPassword().equals(Hashing.sha(user.getPassword()))) {
 
 
 
