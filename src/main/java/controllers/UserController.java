@@ -5,9 +5,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import cache.UserCache;
+
 import model.User;
 import utils.Hashing;
 import utils.Log;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 
 public class UserController {
 
@@ -143,10 +147,10 @@ public class UserController {
     return user;
   }
 
-  public String login(User user) {
+  public static String login(User user) {
 
     // Build the query for DB
-    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password=" + Hashing.sha(user.getPassword());
+    String sql = "SELECT * FROM user where email=" + user.getEmail() + "'AND (password='" + Hashing.sha(user.getPassword() + "' OR password = '" + user.getPassword() + "')");
 
     // Actually do the query
     ResultSet rs = dbCon.query(sql);
@@ -163,15 +167,23 @@ public class UserController {
                 rs.getString("email"),
                 rs.getLong("created_at"));
 
-        Hashing.sha(String.valueOf(user.getCreatedTime()));
-        if (user.getPassword().equals(Hashing.sha(user.getPassword()))) {
+        String token = null;
 
-
-
+        try {
+          // Creating and signing the token - Consider if the RSA is more secure to use as it is asymetric and has different keys
+          Algorithm algorithm = Algorithm.HMAC256("secret");
+          token = JWT.create().withIssuer("auth0").withClaim("userId", user.id).sign(algorithm);
+        } catch (JWTCreationException exception) {
+          //Invalid Signing configuration / Couldn't convert Claims.
+          System.out.println("Something went wrong" + exception.getMessage());
         }
 
-          // return the create object
-          return null;
+        /* Hashing.sha(String.valueOf(user.getCreatedTime()));
+        if (user.getPassword().equals(Hashing.sha(user.getPassword()))) { */
+
+        return token;
+
+
       } else {
         System.out.println("No user found");
       }
@@ -181,8 +193,11 @@ public class UserController {
 
     // Return null
     return null;
+
   }
 
-
-
 }
+
+
+
+

@@ -88,11 +88,26 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String x) {
+  public Response loginUser(String body) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    User user = new Gson().fromJson(body, User.class);
+    String token = UserController.login(user);
+
+    try {
+      if (token != null) {
+        //Return a response with status 200 and JSON as type
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
+      } else {
+        return Response.status(400).entity("Could not login").build();
+      }
+    } catch (Exception ex) {
+      System.out.println("Something went wrong" + ex.getMessage());
+    }
+
+    return null;
+
   }
+
 
   // TODO: Make the system able to delete users
   public Response deleteUser(String x) {
