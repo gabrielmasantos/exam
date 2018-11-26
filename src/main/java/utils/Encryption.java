@@ -1,5 +1,7 @@
 package utils;
 
+import org.omg.CORBA.CODESET_INCOMPATIBLE;
+
 public final class Encryption {
 
   public static String encryptDecryptXOR(String rawString) {
@@ -9,7 +11,10 @@ public final class Encryption {
 
       // The key is predefined and hidden in code
       // TODO: Create a more complex code and store it somewhere better
-      char[] key = {'C', 'B', 'S'};
+
+      /* String encryptionKey = Config.getEncryptionKey(); */
+
+      char[] key = Config.getEncryptionKey();
 
       // Stringbuilder enables you to play around with strings and make useful stuff
       StringBuilder thisIsEncrypted = new StringBuilder();
