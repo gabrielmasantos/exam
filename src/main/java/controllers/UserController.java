@@ -181,22 +181,24 @@ public class UserController {
         /* Hashing.sha(String.valueOf(user.getCreatedTime()));
         if (user.getPassword().equals(Hashing.sha(user.getPassword()))) { */
 
-        return token;
+          return token;
 
 
-      } else {
-        System.out.println("No user found");
+        } else {
+          System.out.println("No user found");
+        }
+      } catch(SQLException ex){
+        System.out.println(ex.getMessage());
       }
-    } catch (SQLException ex) {
-      System.out.println(ex.getMessage());
-    }
 
-    // Return null
-    return null;
+      // Return null
+      return null;
+
+    }
 
   }
 
-}
+
 
 
 
