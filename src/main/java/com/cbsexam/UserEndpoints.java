@@ -76,7 +76,7 @@ public class UserEndpoints {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(String body) {
 
-    System.out.println("Den kører noget create");
+    /* System.out.println("Den kører noget create"); */
 
     // Read the json from body and transfer it to a user class
     User newUser = new Gson().fromJson(body, User.class);
@@ -96,8 +96,9 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system. - LORT
-  //kommenterer login ud, da det er LORT
+  // TODO: Make the system able to login users and assign them a token to use throughout the system. - Dette skal tjekkes
+
+  //Har forsøgt med 2 forskellige tilgange til login. Nedenstående er blevet kommenteret ud. (1 metode)
 
   /*
 
@@ -106,11 +107,11 @@ public class UserEndpoints {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response loginUser(String body) {
 
-    System.out.println("Vi har nået til login start");
+    /* System.out.println("Vi har nået til login start");
 
     User user = new Gson().fromJson(body, User.class);
 
-    System.out.println("Vi har lavet et gson user objekt");
+    /* System.out.println("Vi har lavet et gson user objekt");
     String token = UserController.login(user);
 
     try {
@@ -129,6 +130,11 @@ public class UserEndpoints {
   }
 
   */
+
+
+  //Nedenstående er én af tilgangene til login. Denne benyttes i denne version. (2 metode)
+
+
 
   @POST
   @Path("/login")
@@ -154,8 +160,11 @@ public class UserEndpoints {
   }
 
 
+  //Nedenstående er blevet kommenteret ud, da det skal tjekkes efter.
 
-  /* // TODO: Make the system able to delete users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
+
+/*
+   // TODO: Make the system able to delete users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
   @POST
   @Path("/delete/{token}")
   public Response deleteUser(@PathParam("token") String token) {
@@ -212,5 +221,7 @@ public class UserEndpoints {
     // Return a response with status 200 and JSON as type
     return Response.status(400).entity("Endpoint not implemented malthe skriver").build();
   }
-*/
+
+  */
+
 }
