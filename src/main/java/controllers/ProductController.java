@@ -99,7 +99,7 @@ public class ProductController {
       dbCon = new DatabaseController();
     }
 
-    // TODO: Use caching layer.
+    // TODO: Use caching layer. - FIXED
     String sql = "SELECT * FROM product";
     ProductCache productCache = new ProductCache();
     productCache.getProducts(true);

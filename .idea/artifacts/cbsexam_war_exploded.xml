@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="cbsexam:war exploded">
+    <output-path />
     <root id="root">
-      <element id="javaee-facet-resources" facet="cbsexam/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="cbsexam" />
@@ -50,6 +50,7 @@
           <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.11" />
         </element>
       </element>
+      <element id="javaee-facet-resources" facet="cbsexam/web/Web" />
     </root>
   </artifact>
 </component>

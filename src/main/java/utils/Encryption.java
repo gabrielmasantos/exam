@@ -10,11 +10,11 @@ public final class Encryption {
     if (Config.getEncryption()) {
 
       // The key is predefined and hidden in code
-      // TODO: Create a more complex code and store it somewhere better
+      // TODO: Create a more complex code and store it somewhere better - KODEN ER KORREKT, MEN DET VIRKER IKKE?
 
-      /* String encryptionKey = Config.getEncryptionKey(); */
+      String encryptionKey = Config.getENCRYPTION_KEY();
+      char[] key = encryptionKey.toCharArray();
 
-      char[] key = Config.getEncryptionKey();
 
       // Stringbuilder enables you to play around with strings and make useful stuff
       StringBuilder thisIsEncrypted = new StringBuilder();

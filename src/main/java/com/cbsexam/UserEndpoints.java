@@ -22,13 +22,14 @@ import utils.Log;
 public class UserEndpoints {
 
   UserCache userCache = new UserCache();
+  UserController userController = new UserController();
 
   /**
    * @param idUser
    * @return Responses
    */
   @GET
-  @Path("/{idUser}")
+  @Path("/id/{idUser}")
   public Response getUser(@PathParam("idUser") int idUser) {
 
     // Use the ID to get the user from the controller.
@@ -40,7 +41,7 @@ public class UserEndpoints {
     json = Encryption.encryptDecryptXOR(json);
 
     // Return the user with the status code 200
-    // TODO: What should happen if something breaks down?
+    // TODO: What should happen if something breaks down? - FIXED
     if (user != null) {
 
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
@@ -52,7 +53,7 @@ public class UserEndpoints {
 
   /** @return Responses */
   @GET
-  @Path("/")
+  @Path("/getUsers")
   public Response getUsers() {
 
     // Write to log that we are here
@@ -61,7 +62,7 @@ public class UserEndpoints {
     // Get a list of users
     ArrayList<User> users = userCache.getUsers(false);
 
-    // TODO: Add Encryption to JSON
+    // TODO: Add Encryption to JSON - FIXED
     // Transfer users to json in order to return it to the user
     String json = new Gson().toJson(users);
     json = Encryption.encryptDecryptXOR(json);
@@ -71,9 +72,11 @@ public class UserEndpoints {
   }
 
   @POST
-  @Path("/")
+  @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(String body) {
+
+    System.out.println("Den kører noget create");
 
     // Read the json from body and transfer it to a user class
     User newUser = new Gson().fromJson(body, User.class);
@@ -93,13 +96,21 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system.
+  // TODO: Make the system able to login users and assign them a token to use throughout the system. - LORT
+  //kommenterer login ud, da det er LORT
+
+  /*
+
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response loginUser(String body) {
 
+    System.out.println("Vi har nået til login start");
+
     User user = new Gson().fromJson(body, User.class);
+
+    System.out.println("Vi har lavet et gson user objekt");
     String token = UserController.login(user);
 
     try {
@@ -117,15 +128,43 @@ public class UserEndpoints {
 
   }
 
+  */
 
-  // TODO: Make the system able to delete users
+  @POST
+  @Path("/login")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response loginUser(String body) {
+
+    User user = new Gson().fromJson(body, User.class);
+
+    String token = userController.login(user);
+
+    try{
+      if (token != null) {
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
+      } else {
+        return Response.status(400).entity("Could not login").build();
+      }
+
+    } catch(Exception e) {
+      System.out.println("Error: " + e.getMessage());
+    }
+
+    return null;
+  }
+
+
+
+  /* // TODO: Make the system able to delete users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
   @POST
   @Path("/delete/{token}")
   public Response deleteUser(@PathParam("token") String token) {
 
     boolean userWasDeleted = UserController.delete(token);
+    System.out.println("Nået til 1");
 
     userCache.getUsers(true);
+    System.out.println("Nået til 2");
 
     DecodedJWT jwt = null;
     try {
@@ -135,6 +174,7 @@ public class UserEndpoints {
     }
 
     int id = jwt.getClaim("userId").asInt();
+    System.out.println("Nået til 3");
 
     if (userWasDeleted == true) {
       return Response.status(200).entity("User ID" + id + " was deleted ").build();
@@ -146,10 +186,31 @@ public class UserEndpoints {
 
   }
 
-  // TODO: Make the system able to update users
+  // TODO: Make the system able to update users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
+  @POST
+  @Path("/update")
+  @Consumes (MediaType.APPLICATION_JSON)
+  public Response updateUser(String body) {
+    User user = new Gson().fromJson(body, User.class);
+
+    String token = user.getToken();
+
+    User updatedUser = userController.update(user, token);
+    String json = new Gson().toJson(updatedUser);
+
+    //Return the data to the user
+    if (updatedUser != null) {
+      //Return a response with status 200 and Json as type
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      return Response.status(400).entity("Could not update user").build();
+    }
+  }
+
   public Response updateUser(String x) {
 
     // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    return Response.status(400).entity("Endpoint not implemented malthe skriver").build();
   }
+*/
 }

@@ -123,7 +123,7 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it.
+    // TODO: Hash the user password before saving it. - ER HASHET ET STED, MEN OVEREVEJ OM DEN SKAL INDSKRIVES HER I STEDET
     int userID = dbCon.insert(
             "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
                     + user.getFirstname()
@@ -149,7 +149,80 @@ public class UserController {
     return user;
   }
 
+  public String login(User user) {
+
+    Hashing hashing = new Hashing();
+
+    Log.writeLog(UserController.class.getName(), user, "Login", 0);
+
+    // Check for connection
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+    }
+
+
+    // Build the query for DB
+    // String sql = "SELECT * FROM user WHERE email= '" + user.getEmail() + "' AND password='" + Hashing.sha(user.getPassword()) + "'";
+    String sql = "SELECT * FROM user WHERE email='" + user.getEmail() + "' AND password = '" + Hashing.sha(user.getPassword());
+    // select from user wnere id = 1;
+    // select from user where email = 'test@example.com' AND
+
+    ResultSet rs = dbCon.query(sql);
+    User loginUser = null;
+    String token = null;
+    //hashing.setLoginSalt(String.valueOf(System.currentTimeMillis() / 1000L));
+
+    try {
+      // Get first object, since we only have one
+      if (rs.next()) {
+        loginUser = new User(
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("password"),
+                rs.getString("email"),
+                rs.getLong("created_at"));
+
+        try {
+          Algorithm algorithm = Algorithm.HMAC256("secret");
+          token = JWT.create()
+                  .withIssuer("auth0").withClaim("userId", loginUser.id).withClaim("createdAt", loginUser.getCreatedTime())
+                  .sign(algorithm);
+        } catch (JWTCreationException exception) {
+          //Invalid Signing configuration / Couldn't convert Claims.
+        }
+
+        Log.writeLog(UserController.class.getName(), user, "User actually logged in", 0);
+        // return hashing.hashTokenWithSalt(token);     Hashet token
+        return token;
+      } else {
+        // System.out.println("Wrong username or password");
+        System.out.println("Could not find user");
+
+      }
+
+
+    } catch (SQLException ex) {
+      System.out.println(ex.getMessage());
+    }
+
+    return null;
+  }
+
+
+  //kommenterer login ud, da det er LORT
+
+  /*
+
   public static String login(User user) {
+
+    Hashing hashing = new Hashing();
+
+    //Check for connection
+
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+    }
 
     // Build the query for DB
     String sql = "SELECT * FROM user where email=" + user.getEmail() + "'AND (password='" + Hashing.sha(user.getPassword() + "' OR password = '" + user.getPassword() + "')");
@@ -181,7 +254,7 @@ public class UserController {
         }
 
         /* Hashing.sha(String.valueOf(user.getCreatedTime()));
-        if (user.getPassword().equals(Hashing.sha(user.getPassword()))) { */
+        if (user.getPassword().equals(Hashing.sha(user.getPassword()))) {
 
           return token;
 
@@ -197,6 +270,8 @@ public class UserController {
       return null;
 
     }
+
+    */
 
 
   public static boolean delete(String token) {
@@ -222,13 +297,75 @@ public class UserController {
 
     if (i == 1) {
       Log.writeLog(UserController.class.getName(), null, "User was actually deleted with id: " + id + " and " + i + " rows were/was affected", 0);
-        return true;
+      return true;
     } else {
-        return false;
+      return false;
     }
 
   }
-}
+
+   //update user
+
+  public User update(User postedUser, String token) {
+
+    DecodedJWT jwt = null;
+    Hashing hashing = new Hashing();
+    try {
+      jwt = JWT.decode(token);
+    } catch (JWTDecodeException exception) {
+    }
+
+    postedUser.setId(jwt.getClaim("userId").asInt());
+
+    if (postedUser.getFirstname() == null) {
+      postedUser.setFirstname(jwt.getClaim("first name").asString());
+
+      if (postedUser.getLastname() == null) {
+        postedUser.setLastname(jwt.getClaim("last name").asString());
+
+        if (postedUser.getPassword() == null) {
+          postedUser.setPassword(jwt.getClaim("password").asString());
+        }
+
+        String salt = String.valueOf(jwt.getClaim("created_at").asLong());
+        System.out.println(salt);
+        hashing.setPasswordSalt(String.valueOf(jwt.getClaim("created_at").asLong()));
+        String hashedPassword = hashing.hashPasswordWithSalt(postedUser.getPassword());
+        postedUser.setPassword(hashedPassword);
+      }
+
+      if (postedUser.getEmail() == null) {
+        postedUser.setEmail(jwt.getClaim("email").asString());
+      }
+
+      String sql = "UPDATE user set first_name = '" + postedUser.getFirstname() + "', last_name='" + postedUser.getLastname() + "', email= '" + postedUser.getEmail() + "', password= '" + postedUser.getPassword() + "' WHERE id=" + postedUser.getId();
+
+      if (dbCon == null) {
+        dbCon = new DatabaseController();
+      }
+
+      int rowsAffected = dbCon.updateUser(sql);
+
+      if (rowsAffected == 1) {
+        System.out.println("1 row was affected and user with id: " + postedUser.getId() + " was updated");
+      }
+
+      return postedUser;
+    }
+  }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
