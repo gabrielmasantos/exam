@@ -53,7 +53,7 @@ public class UserEndpoints {
 
   /** @return Responses */
   @GET
-  @Path("/getUsers")
+  @Path("/")
   public Response getUsers() {
 
     // Write to log that we are here
@@ -75,8 +75,6 @@ public class UserEndpoints {
   @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(String body) {
-
-    /* System.out.println("Den kører noget create"); */
 
     // Read the json from body and transfer it to a user class
     User newUser = new Gson().fromJson(body, User.class);
@@ -156,6 +154,7 @@ public class UserEndpoints {
       System.out.println("Error: " + e.getMessage());
     }
 
+
     return null;
   }
 
@@ -163,17 +162,15 @@ public class UserEndpoints {
   //Nedenstående er blevet kommenteret ud, da det skal tjekkes efter.
 
 
-/*
+
    // TODO: Make the system able to delete users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
   @POST
   @Path("/delete/{token}")
   public Response deleteUser(@PathParam("token") String token) {
 
     boolean userWasDeleted = UserController.delete(token);
-    System.out.println("Nået til 1");
 
     userCache.getUsers(true);
-    System.out.println("Nået til 2");
 
     DecodedJWT jwt = null;
     try {
@@ -183,7 +180,6 @@ public class UserEndpoints {
     }
 
     int id = jwt.getClaim("userId").asInt();
-    System.out.println("Nået til 3");
 
     if (userWasDeleted == true) {
       return Response.status(200).entity("User ID" + id + " was deleted ").build();
@@ -194,6 +190,8 @@ public class UserEndpoints {
     }
 
   }
+
+  /*
 
   // TODO: Make the system able to update users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
   @POST

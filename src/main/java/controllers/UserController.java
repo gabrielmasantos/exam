@@ -151,9 +151,9 @@ public class UserController {
 
   //Nedenstående er login og er blevet kommenteret ud. (1 metode)
 
-/*
 
-  public static String login(User user) {
+
+ /* public static String login(User user) {
 
     Hashing hashing = new Hashing();
 
@@ -227,11 +227,13 @@ public class UserController {
 
     */
 
+
+
   //Nedenstående er login (2 metode)
 
 
 
-  public String login(User user) {
+   public String login(User user) {
 
     Hashing hashing = new Hashing();
 
@@ -245,7 +247,7 @@ public class UserController {
 
     // Build the query for DB
     // String sql = "SELECT * FROM user WHERE email= '" + user.getEmail() + "' AND password='" + Hashing.sha(user.getPassword()) + "'";
-    String sql = "SELECT * FROM user WHERE email='" + user.getEmail() + "' AND password = '" + Hashing.sha(user.getPassword());
+    String sql = "SELECT * FROM user WHERE email='" + user.getEmail() + "' AND password = '" + Hashing.sha(user.getPassword()) + "'";
     // select from user wnere id = 1;
     // select from user where email = 'test@example.com' AND
 
@@ -275,7 +277,7 @@ public class UserController {
         }
 
         Log.writeLog(UserController.class.getName(), user, "User actually logged in", 0);
-        // return hashing.hashTokenWithSalt(token);     Hashet token
+        // return hashing.hashTokenWithSalt(token); Hashet token
         return token;
       } else {
         // System.out.println("Wrong username or password");
@@ -295,9 +297,11 @@ public class UserController {
 
 
 
+
+
 //Nedenstående metoder for update og delete er blevet kommenteret ud, da de indeholder småfejl, der skal rettes til.
 
-  /* public static boolean delete(String token) {
+   public static boolean delete(String token) {
 
     DecodedJWT jwt = null;
     try {
