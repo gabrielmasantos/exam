@@ -9,7 +9,8 @@ import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
-  //private String salt = "nul";
+
+  private String salt = Config.getSalt();
 
 
   // TODO: You should add a salt and make this secure - FIXED (BENYTTET SHA I STEDET FOR MD5 I HASHING - SE USER CONTROLLER
@@ -66,10 +67,11 @@ public final class Hashing {
     return rawString;
   }
 
-  /*
+
   public String hashWithSalt(String str){
     String salt = str+this.salt;
-    return md5(salt);
-    */
+    return sha(salt);
+
   }
+}
 

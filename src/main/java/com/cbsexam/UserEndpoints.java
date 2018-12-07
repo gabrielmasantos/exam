@@ -148,7 +148,7 @@ public class UserEndpoints {
         return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
       } else {
         return Response.status(400).entity("Could not login").build();
-      }
+    }
 
     } catch(Exception e) {
       System.out.println("Error: " + e.getMessage());
@@ -191,7 +191,7 @@ public class UserEndpoints {
 
   }
 
-  /*
+
 
   // TODO: Make the system able to update users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
   @POST
@@ -213,7 +213,7 @@ public class UserEndpoints {
       return Response.status(400).entity("Could not update user").build();
     }
   }
-
+/*
   public Response updateUser(String x) {
 
     // Return a response with status 200 and JSON as type

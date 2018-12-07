@@ -23,6 +23,8 @@ public class UserController {
     dbCon = new DatabaseController();
   }
 
+  private String token = null;
+
   public static User getUser(int id) {
 
     // Check for connection
@@ -130,7 +132,7 @@ public class UserController {
                     + "', '"
                     + user.getLastname()
                     + "', '"
-                    + user.getPassword()
+                    + hashing.hashWithSalt(user.getPassword())
                     + "', '"
                     + user.getEmail()
                     + "', "
@@ -247,13 +249,12 @@ public class UserController {
 
     // Build the query for DB
     // String sql = "SELECT * FROM user WHERE email= '" + user.getEmail() + "' AND password='" + Hashing.sha(user.getPassword()) + "'";
-    String sql = "SELECT * FROM user WHERE email='" + user.getEmail() + "' AND password = '" + Hashing.sha(user.getPassword()) + "'";
+    String sql = "SELECT * FROM user WHERE email='" + user.getEmail() + "' AND password = '" + hashing.hashWithSalt(user.getPassword()) + "'";
     // select from user wnere id = 1;
     // select from user where email = 'test@example.com' AND
 
     ResultSet rs = dbCon.query(sql);
-    User loginUser = null;
-    String token = null;
+    User loginUser;
     //hashing.setLoginSalt(String.valueOf(System.currentTimeMillis() / 1000L));
 
     try {
@@ -268,17 +269,18 @@ public class UserController {
                 rs.getLong("created_at"));
 
         try {
+
           Algorithm algorithm = Algorithm.HMAC256("secret");
           token = JWT.create()
                   .withIssuer("auth0").withClaim("userId", loginUser.id).withClaim("createdAt", loginUser.getCreatedTime())
                   .sign(algorithm);
+            return token;
         } catch (JWTCreationException exception) {
           //Invalid Signing configuration / Couldn't convert Claims.
         }
 
         Log.writeLog(UserController.class.getName(), user, "User actually logged in", 0);
         // return hashing.hashTokenWithSalt(token); Hashet token
-        return token;
       } else {
         // System.out.println("Wrong username or password");
         System.out.println("Could not find user");
@@ -292,10 +294,6 @@ public class UserController {
 
     return null;
   }
-
-
-
-
 
 
 
@@ -334,7 +332,8 @@ public class UserController {
    //update user
 
 
-   /* public User update(User postedUser, String token) {
+    public User update(User postedUser, String token) {
+
 
     DecodedJWT jwt = null;
     Hashing hashing = new Hashing();
@@ -346,25 +345,24 @@ public class UserController {
     postedUser.setId(jwt.getClaim("userId").asInt());
 
     if (postedUser.getFirstname() == null) {
-      postedUser.setFirstname(jwt.getClaim("first name").asString());
+      postedUser.setFirstname(jwt.getClaim("first_name").asString());
 
       if (postedUser.getLastname() == null) {
-        postedUser.setLastname(jwt.getClaim("last name").asString());
+        postedUser.setLastname(jwt.getClaim("last_name").asString());
 
         if (postedUser.getPassword() == null) {
           postedUser.setPassword(jwt.getClaim("password").asString());
-        }
+        } else  {
+            //hasher password bruger sender med fra postman
+            postedUser.setPassword(hashing.hashWithSalt(postedUser.getPassword()));
 
-        String salt = String.valueOf(jwt.getClaim("created_at").asLong());
-        System.out.println(salt);
-        hashing.setPasswordSalt(String.valueOf(jwt.getClaim("created_at").asLong()));
-        String hashedPassword = hashing.hashPasswordWithSalt(postedUser.getPassword());
-        postedUser.setPassword(hashedPassword);
+        }
       }
 
       if (postedUser.getEmail() == null) {
         postedUser.setEmail(jwt.getClaim("email").asString());
       }
+
 
       String sql = "UPDATE user set first_name = '" + postedUser.getFirstname() + "', last_name='" + postedUser.getLastname() + "', email= '" + postedUser.getEmail() + "', password= '" + postedUser.getPassword() + "' WHERE id=" + postedUser.getId();
 
@@ -374,15 +372,18 @@ public class UserController {
 
       int rowsAffected = dbCon.updateUser(sql);
 
+
       if (rowsAffected == 1) {
         System.out.println("1 row was affected and user with id: " + postedUser.getId() + " was updated");
+      } else {
       }
 
-      return postedUser;
+
     }
+        return postedUser;
   }
 
-  */
+
 
   }
 

@@ -81,8 +81,8 @@ public class OrderController {
     }
 
     String sql = "SELECT * FROM order";
-    OrderCache orderCache = new OrderCache();
-    orderCache.getOrders(true);
+    /*OrderCache orderCache = new OrderCache();
+    orderCache.getOrders(true); */
 
     ResultSet rs = dbCon.query(sql);
     ArrayList<Order> orders = new ArrayList<Order>();
