@@ -28,6 +28,7 @@ public final class Config {
   private static String SALT;
 
   public static String getENCRYPTION_KEY() { return ENCRYPTION_KEY;}
+
   public static String getSalt() { return SALT;}
 
   public static long getProductTtl() {

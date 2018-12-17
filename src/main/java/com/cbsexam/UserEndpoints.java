@@ -94,44 +94,7 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system. - Dette skal tjekkes
-
-  //Har forsøgt med 2 forskellige tilgange til login. Nedenstående er blevet kommenteret ud. (1 metode)
-
-  /*
-
-  @POST
-  @Path("/login")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String body) {
-
-    /* System.out.println("Vi har nået til login start");
-
-    User user = new Gson().fromJson(body, User.class);
-
-    /* System.out.println("Vi har lavet et gson user objekt");
-    String token = UserController.login(user);
-
-    try {
-      if (token != null) {
-        //Return a response with status 200 and JSON as type
-        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
-      } else {
-        return Response.status(400).entity("Could not login").build();
-      }
-    } catch (Exception ex) {
-      System.out.println("Something went wrong" + ex.getMessage());
-    }
-
-    return null;
-
-  }
-
-  */
-
-
-  //Nedenstående er én af tilgangene til login. Denne benyttes i denne version. (2 metode)
-
+  // TODO: Make the system able to login users and assign them a token to use throughout the system. - FIX
 
 
   @POST
@@ -159,11 +122,7 @@ public class UserEndpoints {
   }
 
 
-  //Nedenstående er blevet kommenteret ud, da det skal tjekkes efter.
-
-
-
-   // TODO: Make the system able to delete users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
+   // TODO: Make the system able to delete users - FIXED
   @POST
   @Path("/delete/{token}")
   public Response deleteUser(@PathParam("token") String token) {
@@ -193,7 +152,7 @@ public class UserEndpoints {
 
 
 
-  // TODO: Make the system able to update users - FIXED BUT MAKE SURE ITS IMPLEMENTED CORRECT
+  // TODO: Make the system able to update users - not fixed
   @POST
   @Path("/update")
   @Consumes (MediaType.APPLICATION_JSON)
@@ -213,13 +172,5 @@ public class UserEndpoints {
       return Response.status(400).entity("Could not update user").build();
     }
   }
-/*
-  public Response updateUser(String x) {
-
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented malthe skriver").build();
-  }
-
-  */
 
 }

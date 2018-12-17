@@ -125,7 +125,7 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it. - ER HASHET ET ANDET STED, MEN OVEREVEJ OM DEN SKAL INDSKRIVES HER I STEDET
+    // TODO: Hash the user password before saving it. - FIX
     int userID = dbCon.insert(
             "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
                     + user.getFirstname()
@@ -150,88 +150,6 @@ public class UserController {
     // Return user
     return user;
   }
-
-  //Nedenstående er login og er blevet kommenteret ud. (1 metode)
-
-
-
- /* public static String login(User user) {
-
-    Hashing hashing = new Hashing();
-
-    //Check for connection
-
-    if (dbCon == null) {
-      dbCon = new DatabaseController();
-    }
-
-    // Build the query for DB
-    String sql = "SELECT * FROM cbsexam.user where email=" + user.getEmail() + "'AND (password = '" + Hashing.sha(user.getPassword()) + "' OR password = '" + user.getPassword() + "')";
-
-    // Actually do the query
-    ResultSet rs = dbCon.query(sql);
-    User loginUser = null;
-
-    try {
-      // Get first object, since we only have one
-      if (rs.next()) {
-        user = new User(
-                rs.getInt("id"),
-                rs.getString("first_name"),
-                rs.getString("last_name"),
-                rs.getString("password"),
-                rs.getString("email"),
-                rs.getLong("created_at"));
-
-        String token = null;
-
-        try {
-          // Creating and signing the token - Consider if the RSA is more secure to use as it is asymetric and has different keys
-          Algorithm algorithm = Algorithm.HMAC256("secret");
-          token = JWT.create().withIssuer("auth0").withClaim("userId", loginUser.id).sign(algorithm);
-        } catch (JWTCreationException exception) {
-          //Invalid Signing configuration / Couldn't convert Claims.
-          System.out.println("Something went wrong" + exception.getMessage());
-        }
-
-        //Verifying the token
-
-        try {
-          Algorithm algorithm = Algorithm.HMAC256("secret");
-          JWTVerifier verifier = JWT.require(algorithm) .withIssuer("auth0").build(); //Reusable verifier instance
-          DecodedJWT jwt = verifier.verify(token);
-        } catch (JWTVerificationException exception) {
-
-          //Invalid signature claims
-
-          System.out.println("Something went wrong with verifying the token - " + exception.getMessage());
-        }
-
-        /* Hashing.sha(String.valueOf(user.getCreatedTime()));
-        if (user.getPassword().equals(Hashing.sha(user.getPassword()))) {
-
-
-        //return the token directly
-          return token;
-
-
-        } else {
-          System.out.println("No user found");
-        }
-      } catch(SQLException ex){
-        System.out.println(ex.getMessage());
-      }
-
-      // Return null
-      return null;
-
-    }
-
-    */
-
-
-
-  //Nedenstående er login (2 metode)
 
 
 
@@ -296,9 +214,6 @@ public class UserController {
   }
 
 
-
-//Nedenstående metoder for update og delete er blevet kommenteret ud, da de indeholder småfejl, der skal rettes til.
-
    public static boolean delete(String token) {
 
     DecodedJWT jwt = null;
@@ -329,7 +244,7 @@ public class UserController {
 
   }
 
-   //update user
+   //update user -- SKAL FIXES
 
 
     public User update(User postedUser, String token) {
